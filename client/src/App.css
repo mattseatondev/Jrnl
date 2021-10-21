@@ -8,7 +8,7 @@
 
   --sun: #f5eb00;
   --mon: #af7be8;
-  --tue: #236971;
+  --tue: #35ccc3;
   --wed: #FE5F55;
   --thu: #94C9A9;
   --fri: #FF8600;
@@ -112,10 +112,46 @@ body {
 .entry h3 {
   color: var(--gray);
   text-decoration: underline;
+  width: 100%;
+}
+
+.entry h5 {
+  color: violet;
+  border: 1px solid violet;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  align-self: flex-end;
 }
 
 .entry p {
   width: 100%;
+}
+
+.entry-header {
+  width: 100%;
+  height: 30px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-around;
+}
+
+.entry-btns {
+  width: 50%;
+  display: flex;
+  justify-content: center;
+}
+
+.header-btn {
+  width: 100px;
+  margin-left: 5px;
+  margin-right: 5px;
+  border-radius: 3px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: white;
 }
 
 .entry textarea {
@@ -127,4 +163,20 @@ body {
   background: rgba(0, 0, 0, 0.25);
   color: lightgreen;
   font-size: 1.1em;
+  margin-bottom: 4px;
+}
+
+.byline {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.byline input {
+  width: 80%;
+}
+
+.byline h5 {
+  min-width: 20%;
 }

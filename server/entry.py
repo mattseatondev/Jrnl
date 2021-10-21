@@ -15,7 +15,7 @@ class Entry():
         self._path = f'./static/entries/{self._today}'
         try:
             todays_entry = os.listdir(f'./static/entries/{self._today}')
-
+            print(f'Entry found for today, {self._today}')
         except Exception as ex:
             if req_new:
                 self.instantiate_new_entry()
@@ -39,17 +39,20 @@ class Entry():
         return os.listdir(self._path)
 
     def update_entry_item(self, t, data):
-        os.remove(f'{self._path}/{t}.txt')
-        revised = '\n === \n'.join([data[k] for k in data.keys()])
+        os.remove((path := f'{self._path}/{t}.txt'))
+        revised = '=!='.join([data[k] for k in data.keys()])
         print(revised)
         file = open(f'{self._path}/{t}.txt', 'w')
         file.write(revised)
         file.close()
+        print(f'Updated {t} data saved')
         # writer = csv.writer(f'{self._path}/{type}.txt')
 
     def entry_item(self, t):
-        props = ['subtitle', 'img', 'body']
-        with open(f'{self._path}/{t}.txt') as file:
+        with (open(f'{self._path}/{t}.txt')) as file:
+            l = list(file)[0].split('=!=')
+            subtitle, img, body = l[0], l[1], l[2]
+            return {'subtitle': subtitle, 'img': img, 'body': body}
             item_list = [item for item in file]
             item_dict = {}
             for index, item in item_list:
