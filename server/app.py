@@ -30,8 +30,16 @@ def update_entry(type):
         entry = Entry(True)
         todays_entry = entry.entry()
         data = request.get_json()
-        print(data)
+        print(f'DATA {data}')
         # print('SECOND')
         # pp.pprint(data)
         entry.update_entry_item(type, data)
         return entry.entry_item(type)
+
+@app.route('/update_oneoff/<type>', methods=['POST', 'OPTIONS'])
+@cross_origin()
+def update_oneoff(type):
+    entry = Entry(True)
+    data = request.get_json()
+    entry.update_oneoff_item(type, data)
+    return entry.oneoffs(type)

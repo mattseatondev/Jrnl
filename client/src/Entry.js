@@ -2,56 +2,16 @@
 import React, { useState, useEffect, useReducer, useContext } from 'react';
 import axios from 'axios';
 
-const entries = [
-  {
-    title: 'Quote',
-    byline: 'Source',
-    short: 'quote',
-    bylineContent: '',
-    bodyContent: ''
-  },
-  {
-    title: 'Joke',
-    byline: 'Source',
-    short: 'joke',
-    bylineContent: '',
-    bodyContent: ''
-  },
-  {
-    title: 'Fact',
-    byline: 'Subject',
-    short: 'fact',
-    bylineContent: '',
-    bodyContent: ''
-  },
-  {
-    title: 'Tech Skill',
-    byline: 'Stack',
-    short: 'tech_skill',
-    bylineContent: '',
-    bodyContent: ''
-  },
-  {
-    title: 'Non-Tech Skill',
-    byline: 'Category',
-    short: 'non_tech_skill',
-    bylineContent: '',
-    bodyContent: ''
-  },
-  {
-    title: 'Idea',
-    byline: 'Requirements',
-    short: 'idea',
-    bylineContent: '',
-    bodyContent: ''
-  },
-  {
-    title: 'Notes',
-    byline: 'Post Script',
-    short: 'notes',
-    bylineContent: '',
-    bodyContent: ''
-  }];
+async function getEntries(){
+  try {
+    const url = 'http://127.0.0.1:5000/';
+    const res = await fetch(url);
+    return await res.json();
+  } catch(err) {
+    console.error({GET_ENTRIES_ERROR: err});
+    return []
+  }
+}
 
 function EntryHeader(props){
   return (
@@ -76,8 +36,8 @@ function SwitchComponent(props){
   }
   return props.active != props.index
     ? <>
-        <h5>{ entries[props.index].bylineContent }</h5>
-        <p>{ entries[props.index].bodyContent }</p>
+        <h5>{ props.entries[props.index].bylineContent }</h5>
+        <p>{ props.entries[props.index].bodyContent }</p>
       </>
     : (
         <>
@@ -94,6 +54,19 @@ export default function Entry(){
   const [activeEntry, setActiveEntry] = useState(-1);
   const [body, setBody] = useState('');
   const [byline, setByline] = useState('');
+  const [entries, setEntries] = useState([]);
+  useEffect(() => {
+    const loadData = async() => {
+      let data = await getEntries();
+      data = ['quote', 'joke', 'fact', 'tech_skill', 'non_tech_skill', 'idea', 'notes'].reduce((a, i) => {
+        a.push(data.find(d => d.short == i));
+        return a;
+      }, []);
+
+      setEntries(data);
+    };
+    loadData();
+  }, [])
   function setContextEntry(index){
     const IndexContext = React.createContext(index);
     setActiveEntry(index);
@@ -115,17 +88,23 @@ export default function Entry(){
     fetch(`http://127.0.0.1:5000/update_entry/${entries[index].short}`, reqOptions)
         .then(res => res.json())
         .then(data => {
-          entries[index].bodyContent = data.body;
-          entries[index].bylineContent = data.subtitle
+          let fncEntries = entries
+          console.log({BODY: data.body, SUBTITLE: data.subtitle});
+          fncEntries[index].bodyContent = data.body;
+          fncEntries[index].bylineContent = data.subtitle;
+          setEntries(fncEntries);
           setActiveEntry(-1)
         })
   }
   return (
-    entries.map((e, x) =>
-      <div className="one-off entry" key={ e.short } onClick={ () => setContextEntry(x) }>
+    entries.map((e, x) => {
+      console.log(e);
+      return <div className="one-off entry" key={ e.short } onClick={ () => setContextEntry(x) }>
         <EntryHeader entry={ e } active={ activeEntry } index={ x } onClick={ postUpdatedEntry }/>
-        <SwitchComponent active={ activeEntry } index={ x } byline={ e.byline } onChangeBody={ setBody } onChangeByline={ setByline } body={ body } bylineVal={ byline }/>
+        <SwitchComponent entries={ entries } active={ activeEntry } index={ x } byline={ e.byline } onChangeBody={ setBody } onChangeByline={ setByline } body={ body } bylineVal={ byline }/>
       </div>
+    }
+
     )
   );
 }

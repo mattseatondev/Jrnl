@@ -1,0 +1,27 @@
+vocab
+artist
+hello
+code
+Spanish: Narrative
+recipe
+am
+pm
+read
+game
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
